@@ -43,7 +43,8 @@ class Author(models.Model):
 class Paper(models.Model):
     pdf = models.FileField(upload_to='pdfs/%Y/%m/%d/', blank=True)
     tei = models.FileField(upload_to='xmls/%Y/%m/%d/', blank=True)
-    title = models.TextField(null=True, blank=True, unique=True)
+    title = models.CharField(max_length=500, null=True,
+                             blank=True, unique=True)
     abstract = models.TextField(blank=True)
     doi = models.CharField(max_length=100, null=True, blank=True, unique=True)
     url = models.URLField(null=True, blank=True, unique=True)
