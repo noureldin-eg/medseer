@@ -7,12 +7,18 @@ class Journal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Organization(models.Model):
     name = models.CharField(max_length=200, unique=True)
     rank = models.PositiveSmallIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Author(models.Model):
@@ -23,6 +29,9 @@ class Author(models.Model):
         Organization, on_delete=models.PROTECT, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.forename} {self.surname}'
 
     class Meta:
         constraints = [
@@ -42,3 +51,6 @@ class Paper(models.Model):
     journal = models.ForeignKey(Journal, on_delete=models.PROTECT, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
