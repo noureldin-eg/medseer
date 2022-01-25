@@ -26,7 +26,7 @@ class Author(models.Model):
     surname = models.CharField(max_length=100)
     email = models.EmailField(null=True, blank=True, unique=True)
     organization = models.ForeignKey(
-        Organization, on_delete=models.PROTECT, blank=True)
+        Organization, on_delete=models.PROTECT, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -48,7 +48,8 @@ class Paper(models.Model):
     doi = models.CharField(max_length=100, null=True, blank=True, unique=True)
     url = models.URLField(null=True, blank=True, unique=True)
     authors = models.ManyToManyField(Author, blank=True)
-    journal = models.ForeignKey(Journal, on_delete=models.PROTECT, blank=True)
+    journal = models.ForeignKey(
+        Journal, on_delete=models.PROTECT, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
