@@ -1,3 +1,4 @@
+from django.core.validators import FileExtensionValidator
 from django.db import models
 
 
@@ -41,8 +42,12 @@ class Author(models.Model):
 
 
 class Paper(models.Model):
-    pdf = models.FileField(upload_to='pdfs/%Y/%m/%d/', blank=True)
-    tei = models.FileField(upload_to='xmls/%Y/%m/%d/', blank=True)
+    pdf = models.FileField(upload_to='pdfs/%Y/%m/%d/', blank=True,
+                           help_text="Upload *.pdf file and Save to generate .tie.xml using Grobid",
+                           validators=[FileExtensionValidator(['pdf'])])
+    tei = models.FileField(upload_to='xmls/%Y/%m/%d/', blank=True,
+                           help_text="Upload *.tie.xml file and Save to autofill paper data",
+                           validators=[FileExtensionValidator(['xml'])])
     title = models.CharField(max_length=500, null=True,
                              blank=True, unique=True)
     abstract = models.TextField(blank=True)
