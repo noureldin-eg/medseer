@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 
 from .models import Journal, Organization, Author, Paper
 
@@ -33,7 +34,7 @@ class AuthorInline(admin.TabularInline):
     extra = 1
 
 
-@ admin.register(Organization)
+@admin.register(Organization)
 class OrganizationAdmin(admin.ModelAdmin):
     actions_on_top = True
     actions_on_bottom = True
@@ -52,7 +53,7 @@ class OrganizationAdmin(admin.ModelAdmin):
     search_fields = ('name', 'rank')
 
 
-@ admin.register(Author)
+@admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
     actions_on_top = True
     actions_on_bottom = True
@@ -74,14 +75,14 @@ class AuthorAdmin(admin.ModelAdmin):
     search_fields = ('name', 'rank')
 
 
-@ admin.register(Paper)
+@admin.register(Paper)
 class PaperAdmin(admin.ModelAdmin):
     actions_on_top = True
     actions_on_bottom = True
     date_hierarchy = 'modified_at'
     fieldsets = (
         (None,                {
-            'fields': ('pdf', 'tei')}),
+            'fields': (('pdf', 'grobid_button'), ('tei', 'parse_button'))}),
         ('Paper information', {
             'fields': ('title', 'abstract', 'journal', 'doi', 'url', 'authors')}),
         ('Date information',  {
@@ -94,5 +95,18 @@ class PaperAdmin(admin.ModelAdmin):
     list_display_links = ('title', 'doi')
     list_filter = ('authors', 'journal', 'created_at', 'modified_at')
     ordering = ('title', '-created_at', '-modified_at')
-    readonly_fields = ('created_at', 'modified_at')
+    readonly_fields = ('grobid_button', 'parse_button',
+                       'created_at', 'modified_at')
     search_fields = ('title', 'abstract', 'doi', 'url', 'authors', 'journal')
+
+    @staticmethod
+    def button(label, enabled):
+        return f'<a class="button default" {"href={}" if enabled else "disabled"}>{label}</a>'
+
+    @admin.display(description='Extract')
+    def grobid_button(self, obj):
+        return format_html(PaperAdmin.button('using Grobid', obj.pdf), '')
+
+    @admin.display(description='Parse')
+    def parse_button(self, obj):
+        return format_html(PaperAdmin.button('from TEI', obj.tei), '')
