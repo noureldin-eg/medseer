@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.utils.html import format_html
 
 from .models import Journal, Organization, Author, Paper
+from import_export import resources
+from import_export.admin import ImportExportActionModelAdmin
 
 
 class PaperInline(admin.TabularInline):
@@ -75,10 +77,22 @@ class AuthorAdmin(admin.ModelAdmin):
     search_fields = ('name', 'rank')
 
 
+class PaperResource(resources.ModelResource):
+
+    class Meta:
+        model = Paper
+        skip_unchanged = True
+        report_skipped = True
+        import_id_fields = ('tei',)
+        fields = ('tei', 'doi', 'url',)
+        export_order = ('doi', 'url', 'tei',)
+
+
 @admin.register(Paper)
-class PaperAdmin(admin.ModelAdmin):
+class PaperAdmin(ImportExportActionModelAdmin):
+    resource_class = PaperResource
     actions_on_top = True
-    actions_on_bottom = True
+    # actions_on_bottom = True
     date_hierarchy = 'modified_at'
     fieldsets = (
         (None,                {
