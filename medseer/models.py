@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
-from django.core.validators import FileExtensionValidator
-from django.db import models
 from dateutil import parser
+from django.core.validators import FileExtensionValidator
+from django.db import IntegrityError, models
 
 
 class Journal(models.Model):
@@ -75,4 +75,24 @@ class Paper(models.Model):
         self.doi = soup.find('idno', type='DOI').getText()
         self.published_at = parser.parse(
             soup.find('date', type='published').get('when'))
+        authors = []
+        for author_tag in soup.find_all('author'):
+            print(Organization.objects.get_or_create(
+                name="; ".join(org.getText()
+                               for org in author_tag.find_all('orgName'))))
+            try:
+                organization, created = Organization.objects.get_or_create(
+                    name="; ".join(org.getText() for org in author_tag.find_all('orgName')))
+                author, created = Author.objects.update_or_create(
+                    forename=author_tag.forename.getText() if author_tag.forename else None,
+                    surname=author_tag.surname.getText() if author_tag.surname else None,
+                    defaults={
+                        'email': author_tag.email.getText() if author_tag.email else None,
+                        'organization': organization
+                    }
+                )
+                authors.append(author)
+            except IntegrityError:
+                pass
+        self.authors.set(authors)
         return self
