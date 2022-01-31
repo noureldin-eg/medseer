@@ -67,10 +67,10 @@ class Paper(models.Model):
 
     def parse_tei(self):
         soup = BeautifulSoup(self.tei, 'xml')
-        title = soup.title
-        while not title.getText():
-            title = title.find_next('title')
-        self.title = title.getText()
+        title_tag = soup.title
+        while not title_tag.getText():
+            title_tag = title_tag.find_next('title')
+        self.title = title_tag.getText()
         self.abstract = soup.abstract.getText()
         self.doi = soup.find('idno', type='DOI').getText()
         self.published_at = parser.parse(
