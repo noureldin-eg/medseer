@@ -77,9 +77,6 @@ class Paper(models.Model):
             soup.find('date', type='published').get('when'))
         authors = []
         for author_tag in soup.find_all('author'):
-            print(Organization.objects.get_or_create(
-                name="; ".join(org.getText()
-                               for org in author_tag.find_all('orgName'))))
             try:
                 organization, created = Organization.objects.get_or_create(
                     name="; ".join(org.getText() for org in author_tag.find_all('orgName')))
