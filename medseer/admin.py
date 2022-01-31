@@ -99,6 +99,7 @@ class PaperResource(resources.ModelResource):
 @admin.register(Paper)
 class PaperAdmin(ImportExportActionModelAdmin):
     resource_class = PaperResource
+    actions = ['parse_tei']
     actions_on_top = True
     # actions_on_bottom = True
     date_hierarchy = 'modified_at'
@@ -147,3 +148,8 @@ class PaperAdmin(ImportExportActionModelAdmin):
         paper = get_object_or_404(Paper, pk=paper_id)
         paper.parse_tei().save()
         return HttpResponseRedirect(reverse('admin:medseer_paper_change', args=(paper_id,)))
+
+    @admin.action(description='Parse TEI of selected papers')
+    def parse_tei(self, request, queryset):
+        for paper in queryset.all():
+            paper.parse_tei().save()
