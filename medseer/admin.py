@@ -27,7 +27,8 @@ class JournalAdmin(admin.ModelAdmin):
     )
     inlines = (PaperInline,)
     list_display = ('name', 'rank', 'created_at', 'modified_at')
-    list_display_links = ('name', 'rank')
+    # list_display_links = ('name', 'rank')
+    list_editable = ('rank',)
     list_filter = ('rank', 'created_at', 'modified_at')
     ordering = ('name', '-rank', '-created_at', '-modified_at')
     readonly_fields = ('created_at', 'modified_at')
@@ -45,13 +46,16 @@ class OrganizationAdmin(admin.ModelAdmin):
     actions_on_bottom = True
     date_hierarchy = 'modified_at'
     fieldsets = (
-        (None,               {'fields': ('name', 'rank')}),
+        (None,               {
+            'classes': ('wide',),
+            'fields': ('name', 'rank')}),
         ('Date information', {'classes': ('collapse',),
                               'fields': ('created_at', 'modified_at')}),
     )
     inlines = (AuthorInline,)
     list_display = ('name', 'rank', 'created_at', 'modified_at')
-    list_display_links = ('name', 'rank')
+    # list_display_links = ('name', 'rank')
+    list_editable = ('rank',)
     list_filter = ('rank', 'created_at', 'modified_at')
     ordering = ('name', '-rank', '-created_at', '-modified_at')
     readonly_fields = ('created_at', 'modified_at')
@@ -65,6 +69,7 @@ class AuthorAdmin(admin.ModelAdmin):
     date_hierarchy = 'modified_at'
     fieldsets = (
         (None,               {
+            'classes': ('wide',),
             'fields': (('forename', 'surname'), 'email', 'organization')}),
         ('Date information', {
             'classes': ('collapse',),
@@ -72,9 +77,9 @@ class AuthorAdmin(admin.ModelAdmin):
     )
     list_display = ('__str__', 'forename', 'surname', 'email',
                     'organization', 'created_at', 'modified_at')
-    list_display_links = ('__str__', 'organization')
-    list_editable = ('forename', 'surname', 'email')
-    list_filter = ('organization', 'created_at', 'modified_at')
+    list_display_links = ('__str__', 'email')
+    list_editable = ('forename', 'surname')
+    list_filter = ('created_at', 'modified_at', 'organization')
     ordering = ('forename', 'surname', '-created_at', '-modified_at')
     readonly_fields = ('created_at', 'modified_at')
     search_fields = ('name', 'rank')
@@ -110,8 +115,8 @@ class PaperAdmin(ImportExportActionModelAdmin):
     list_display = ('title', 'doi', 'url', 'journal', 'published_at',
                     'created_at', 'modified_at')
     list_display_links = ('title', 'doi')
-    list_filter = ('authors', 'journal', 'published_at',
-                   'created_at', 'modified_at')
+    list_filter = ('published_at', 'created_at',
+                   'modified_at', 'journal', 'authors')
     ordering = ('title', '-created_at', '-modified_at')
     readonly_fields = ('grobid_button', 'parse_button',
                        'created_at', 'modified_at')
