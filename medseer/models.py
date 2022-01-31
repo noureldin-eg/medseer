@@ -6,7 +6,7 @@ from dateutil import parser
 
 class Journal(models.Model):
     name = models.CharField(max_length=200, unique=True)
-    rank = models.PositiveSmallIntegerField()
+    rank = models.PositiveSmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -16,7 +16,7 @@ class Journal(models.Model):
 
 class Organization(models.Model):
     name = models.CharField(max_length=200, unique=True)
-    rank = models.PositiveSmallIntegerField()
+    rank = models.PositiveSmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
