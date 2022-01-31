@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from dateutil import parser
 
 
 class Journal(models.Model):
@@ -59,6 +60,7 @@ class Paper(models.Model):
         Journal, on_delete=models.PROTECT, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+    published_at = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.title or "<Untitled Paper>"
@@ -71,4 +73,6 @@ class Paper(models.Model):
         self.title = title.getText()
         self.abstract = soup.abstract.getText()
         self.doi = soup.find('idno', type='DOI').getText()
+        self.published_at = parser.parse(
+            soup.find('date', type='published').get('when'))
         return self

@@ -101,16 +101,17 @@ class PaperAdmin(ImportExportActionModelAdmin):
         (None,                {
             'fields': (('pdf', 'grobid_button'), ('tei', 'parse_button'))}),
         ('Paper information', {
-            'fields': ('title', 'abstract', 'journal', 'doi', 'url', 'authors')}),
+            'fields': ('title', 'abstract', 'journal', 'published_at', 'doi', 'url', 'authors')}),
         ('Date information',  {
             'classes': ('collapse',),
             'fields': ('created_at', 'modified_at')}),
     )
     filter_horizontal = ('authors',)
-    list_display = ('title', 'doi', 'url', 'journal',
+    list_display = ('title', 'doi', 'url', 'journal', 'published_at',
                     'created_at', 'modified_at')
     list_display_links = ('title', 'doi')
-    list_filter = ('authors', 'journal', 'created_at', 'modified_at')
+    list_filter = ('authors', 'journal', 'published_at',
+                   'created_at', 'modified_at')
     ordering = ('title', '-created_at', '-modified_at')
     readonly_fields = ('grobid_button', 'parse_button',
                        'created_at', 'modified_at')
