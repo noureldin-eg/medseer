@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from django.core.validators import FileExtensionValidator
 from django.db import models
 
@@ -61,3 +62,13 @@ class Paper(models.Model):
 
     def __str__(self):
         return self.title or "<Untitled Paper>"
+
+    def parse_tei(self):
+        soup = BeautifulSoup(self.tei, 'xml')
+        title = soup.title
+        while not title.getText():
+            title = title.find_next('title')
+        self.title = title.getText()
+        self.abstract = soup.abstract.getText()
+        self.doi = soup.find('idno', type='DOI').getText()
+        return self

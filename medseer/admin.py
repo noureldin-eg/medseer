@@ -1,9 +1,12 @@
 from django.contrib import admin
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.urls import path, reverse
 from django.utils.html import format_html
-
-from .models import Journal, Organization, Author, Paper
 from import_export import resources
 from import_export.admin import ImportExportActionModelAdmin
+
+from .models import Author, Journal, Organization, Paper
 
 
 class PaperInline(admin.TabularInline):
@@ -123,4 +126,18 @@ class PaperAdmin(ImportExportActionModelAdmin):
 
     @admin.display(description='Parse')
     def parse_button(self, obj):
-        return format_html(PaperAdmin.button('from TEI', obj.tei), '')
+        return format_html(PaperAdmin.button('from TEI', obj.tei), reverse('admin:medseer_paper_parse_tei', args=(obj.id,)))
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('<path:object_id>/parse_tei/', self.admin_site.admin_view(self.parse_tei_view),
+                 name='medseer_paper_parse_tei')
+        ]
+        return custom_urls + urls
+
+    def parse_tei_view(self, request, **kwargs):
+        paper_id = kwargs['object_id']
+        paper = get_object_or_404(Paper, pk=paper_id)
+        paper.parse_tei().save()
+        return HttpResponseRedirect(reverse('admin:medseer_paper_change', args=(paper_id,)))
