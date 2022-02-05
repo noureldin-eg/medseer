@@ -97,14 +97,14 @@ class ImportPaperResource(resources.ModelResource):
 
 
 class ExportPaperResource(resources.ModelResource):
-    content = Field()
+    contents = Field()
 
-    def dehydrate_content(self, paper):
+    def dehydrate_contents(self, paper):
         return '%s\n%s' % (paper.title, paper.abstract)
 
     class Meta:
         model = Paper
-        fields = ('id', 'content')
+        fields = ('id', 'contents')
 
 
 @admin.register(Paper)
