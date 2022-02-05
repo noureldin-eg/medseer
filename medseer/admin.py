@@ -1,3 +1,4 @@
+from import_export.fields import Field
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -85,7 +86,7 @@ class AuthorAdmin(admin.ModelAdmin):
     search_fields = ('name', 'rank')
 
 
-class PaperResource(resources.ModelResource):
+class ImportPaperResource(resources.ModelResource):
 
     class Meta:
         model = Paper
@@ -93,12 +94,22 @@ class PaperResource(resources.ModelResource):
         report_skipped = True
         import_id_fields = ('tei',)
         fields = ('tei', 'doi', 'url',)
-        export_order = ('doi', 'url', 'tei',)
+
+
+class ExportPaperResource(resources.ModelResource):
+    content = Field()
+
+    def dehydrate_content(self, paper):
+        return '%s\n%s' % (paper.title, paper.abstract)
+
+    class Meta:
+        model = Paper
+        fields = ('id', 'content')
 
 
 @admin.register(Paper)
 class PaperAdmin(ImportExportActionModelAdmin):
-    resource_class = PaperResource
+    resource_class = ImportPaperResource
     actions = ['parse_tei']
     actions_on_top = True
     # actions_on_bottom = True
@@ -122,6 +133,9 @@ class PaperAdmin(ImportExportActionModelAdmin):
     readonly_fields = ('grobid_button', 'parse_button',
                        'created_at', 'modified_at')
     search_fields = ('title', 'abstract', 'doi', 'url', 'authors', 'journal')
+
+    def get_export_resource_class(self):
+        return ExportPaperResource
 
     @staticmethod
     def button(label, enabled):
