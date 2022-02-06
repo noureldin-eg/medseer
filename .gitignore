@@ -9,3 +9,6 @@ localdev-config.json
 server/localdev-config.json
 db.sqlite3
 .env
+pdfs/
+xmls/
+data/

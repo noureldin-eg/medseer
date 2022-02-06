@@ -6,3 +6,7 @@ Dockerfile-tools
 .git/
 .github/
 .gitignore
+.env
+pdfs/
+xmls/
+data/
