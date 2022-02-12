@@ -1,3 +1,7 @@
 Dockerfile
 Dockerfile-tools
 Pipfile.lock
+.env
+pdfs/
+xmls/
+data/
