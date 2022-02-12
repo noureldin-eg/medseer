@@ -99,11 +99,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_URL = "/media/"
+
 STATICFILES_DIRS = (
     os.path.join(os.path.abspath(BASE_DIR), "app", "static"),
 )
 
 STATIC_ROOT = os.path.join(os.path.abspath(BASE_DIR), "staticfiles")
+
+MEDIA_ROOT = os.path.join(os.path.abspath(BASE_DIR), "media")
 
 
 # Rest framework
