@@ -72,9 +72,10 @@ class Paper(models.Model):
             title_tag = title_tag.find_next('title')
         self.title = title_tag.getText()
         self.abstract = soup.abstract.getText()
-        self.doi = soup.find('idno', type='DOI').getText()
-        self.published_at = parser.parse(
-            soup.find('date', type='published').get('when'))
+        # self.doi = soup.find('idno', type='DOI').getText()
+        date_published_tag = soup.find('date', type='published')
+        if date_published_tag:
+            self.published_at = parser.parse(date_published_tag.get('when'))
         authors = []
         for author_tag in soup.find_all('author'):
             try:
