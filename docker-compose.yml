@@ -2,9 +2,9 @@ version: "3.9"
 
 services:
   db:
-    image: postgres
+    image: docker.io/library/postgres:14.2-alpine
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - ./data/db:/var/lib/postgresql/data:z,U
     environment:
       - PGUSER=postgres
       - POSTGRES_NAME=postgres
@@ -20,8 +20,8 @@ services:
     # command: gunicorn --log-level debug --env DJANGO_SETTINGS_MODULE=pythondjangoapp.settings.production pythondjangoapp.wsgi -b 0.0.0.0:8080
     command: python3 manage.py runserver 0.0.0.0:8080
     volumes:
-      - ./data/xmls:/opt/app-root/src/xmls
-      - ./data/pdfs:/opt/app-root/src/pdfs
+      - ./data/xmls:/opt/app-root/src/media/xmls:z,U
+      - ./data/pdfs:/opt/app-root/src/media/pdfs:z,U
     ports:
       - "8080:8080"
     environment:
