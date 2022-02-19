@@ -10,6 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(
 SECRET_KEY = get_random_secret_key()
 
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [os.environ['CSRF_TRUSTED_ORIGINS']]
 
 # Application definition
 INSTALLED_APPS = [
